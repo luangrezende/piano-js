@@ -2,45 +2,45 @@ const WHITE_W = 52;
 const BLACK_W = 34;
 const GAP     = 1;
 
-// note, type, frequency (Hz), key label, keyboard shortcut
+// note, type, frequency (Hz) and key label
 const KEY_DATA = [
-  { note: 'C4',  type: 'white', freq: 261.63, label: 'C4', kb: 'a' },
-  { note: 'C#4', type: 'black', freq: 277.18,              kb: 'w' },
-  { note: 'D4',  type: 'white', freq: 293.66, label: 'D',  kb: 's' },
-  { note: 'D#4', type: 'black', freq: 311.13,              kb: 'e' },
-  { note: 'E4',  type: 'white', freq: 329.63, label: 'E',  kb: 'd' },
-  { note: 'F4',  type: 'white', freq: 349.23, label: 'F',  kb: 'f' },
-  { note: 'F#4', type: 'black', freq: 369.99,              kb: 't' },
-  { note: 'G4',  type: 'white', freq: 392.00, label: 'G',  kb: 'g' },
-  { note: 'G#4', type: 'black', freq: 415.30,              kb: 'y' },
-  { note: 'A4',  type: 'white', freq: 440.00, label: 'A',  kb: 'h' },
-  { note: 'A#4', type: 'black', freq: 466.16,              kb: 'u' },
-  { note: 'B4',  type: 'white', freq: 493.88, label: 'B',  kb: 'j' },
-  { note: 'C5',  type: 'white', freq: 523.25, label: 'C5', kb: 'k' },
-  { note: 'C#5', type: 'black', freq: 554.37,              kb: 'o' },
-  { note: 'D5',  type: 'white', freq: 587.33, label: 'D',  kb: 'l' },
-  { note: 'D#5', type: 'black', freq: 622.25,              kb: 'p' },
-  { note: 'E5',  type: 'white', freq: 659.25, label: 'E',  kb: ';' },
-  { note: 'F5',  type: 'white', freq: 698.46, label: 'F',  kb: '' },
-  { note: 'F#5', type: 'black', freq: 739.99,              kb: '' },
-  { note: 'G5',  type: 'white', freq: 783.99, label: 'G',  kb: '' },
-  { note: 'G#5', type: 'black', freq: 830.61,              kb: '' },
-  { note: 'A5',  type: 'white', freq: 880.00, label: 'A',  kb: '' },
-  { note: 'A#5', type: 'black', freq: 932.33,              kb: '' },
-  { note: 'B5',  type: 'white', freq: 987.77, label: 'B',  kb: '' },
+  { note: 'C4',  type: 'white', freq: 261.63, label: 'C4' },
+  { note: 'C#4', type: 'black', freq: 277.18 },
+  { note: 'D4',  type: 'white', freq: 293.66, label: 'D' },
+  { note: 'D#4', type: 'black', freq: 311.13 },
+  { note: 'E4',  type: 'white', freq: 329.63, label: 'E' },
+  { note: 'F4',  type: 'white', freq: 349.23, label: 'F' },
+  { note: 'F#4', type: 'black', freq: 369.99 },
+  { note: 'G4',  type: 'white', freq: 392.00, label: 'G' },
+  { note: 'G#4', type: 'black', freq: 415.30 },
+  { note: 'A4',  type: 'white', freq: 440.00, label: 'A' },
+  { note: 'A#4', type: 'black', freq: 466.16 },
+  { note: 'B4',  type: 'white', freq: 493.88, label: 'B' },
+  { note: 'C5',  type: 'white', freq: 523.25, label: 'C5' },
+  { note: 'C#5', type: 'black', freq: 554.37 },
+  { note: 'D5',  type: 'white', freq: 587.33, label: 'D' },
+  { note: 'D#5', type: 'black', freq: 622.25 },
+  { note: 'E5',  type: 'white', freq: 659.25, label: 'E' },
+  { note: 'F5',  type: 'white', freq: 698.46, label: 'F' },
+  { note: 'F#5', type: 'black', freq: 739.99 },
+  { note: 'G5',  type: 'white', freq: 783.99, label: 'G' },
+  { note: 'G#5', type: 'black', freq: 830.61 },
+  { note: 'A5',  type: 'white', freq: 880.00, label: 'A' },
+  { note: 'A#5', type: 'black', freq: 932.33 },
+  { note: 'B5',  type: 'white', freq: 987.77, label: 'B' },
 ];
 
 /* ── Audio ── */
-let audioCtx = null;
+let audioContext = null;
 
-function getCtx() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  return audioCtx;
+function getAudioContext() {
+  if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioContext.state === 'suspended') audioContext.resume();
+  return audioContext;
 }
 
 function playNote(freq) {
-  const ctx = getCtx();
+  const ctx = getAudioContext();
   const t   = ctx.currentTime;
 
   const master = ctx.createGain();
@@ -73,7 +73,6 @@ function playNote(freq) {
 /* ── Build DOM ── */
 const pianoEl  = document.getElementById('piano');
 const noteDisp = document.getElementById('noteDisplay');
-const kbMap    = {};
 let   fadeTimer = null;
 
 function showNote(noteName) {
@@ -97,6 +96,7 @@ KEY_DATA.filter(k => k.type === 'white').forEach(key => {
 
   if (key.label) {
     const lbl = document.createElement('span');
+    lbl.id = `label-${key.note.toLowerCase()}`;
     lbl.className = 'key-label';
     lbl.textContent = key.label;
     el.appendChild(lbl);
@@ -106,7 +106,6 @@ KEY_DATA.filter(k => k.type === 'white').forEach(key => {
   el.addEventListener('touchstart', e => { e.preventDefault(); trigger(el, key.note, key.freq); }, { passive: false });
 
   pianoEl.appendChild(el);
-  if (key.kb) kbMap[key.kb] = { el, note: key.note, freq: key.freq };
 });
 
 // 2 — black keys (absolute)
@@ -116,6 +115,7 @@ KEY_DATA.forEach(key => {
     wIdx++;
   } else {
     const el = document.createElement('div');
+    el.id = `label-${key.note.toLowerCase()}`;
     el.className = 'key-black';
 
     // centre the black key over the boundary between two adjacent white keys
@@ -126,18 +126,6 @@ KEY_DATA.forEach(key => {
     el.addEventListener('touchstart', e => { e.preventDefault(); trigger(el, key.note, key.freq); }, { passive: false });
 
     pianoEl.appendChild(el);
-    if (key.kb) kbMap[key.kb] = { el, note: key.note, freq: key.freq };
-  }
-});
-
-/* ── Keyboard ── */
-document.addEventListener('keydown', e => {
-  if (e.repeat) return;
-  const k = e.key === ';' ? ';' : e.key.toLowerCase();
-  const entry = kbMap[k];
-  if (entry) {
-    e.preventDefault();
-    trigger(entry.el, entry.note, entry.freq);
   }
 });
 
@@ -176,3 +164,39 @@ window.addEventListener('orientationchange', () => {
 });
 
 updateScale();
+
+// test env button to check if JS is running
+const testBtn = document.getElementById('test-btn');
+
+async function playSong() {
+  const response = await fetch('../songs/testsong.json');
+  const data = await response.json();
+  const pianoSong = data.notes;
+
+  for (const element of pianoSong) {
+    if (element.notes === null) {
+      await shortPause(element.duration);
+      continue;
+    }
+
+    if (element.notes && element.notes.length > 0) {
+      for (const note of element.notes) {
+        const key = document.getElementById(`label-${note.toLowerCase()}`);
+        if (key) {
+          key.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+        } else {
+          const keyData = KEY_DATA.find(k => k.note === note);
+          if (keyData) playNote(keyData.freq);
+        }
+      }
+    }
+
+    await shortPause(element.duration);
+  }
+}
+
+async function shortPause(timer) {
+  await new Promise(resolve => setTimeout(resolve, timer)); // timer ms
+}
+
+testBtn.addEventListener('click', playSong);

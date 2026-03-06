@@ -1,0 +1,105 @@
+{
+  "name": "Song 1",
+  "notes": [
+  { "notes": ["B4", "D5", "E5"], "duration": 217 },
+  { "notes": ["D5"],              "duration": 217 },
+  { "notes": ["F#5"],             "duration": 435 },
+
+  { "notes": ["E5", "D5", "B4"], "duration": 217 },
+  { "notes": ["D5"],              "duration": 217 },
+
+  { "notes": ["B4", "D5", "E5"], "duration": 217 },
+  { "notes": ["D5"],              "duration": 217 },
+  { "notes": ["F#5"],             "duration": 217 },
+  { "notes": null,                "duration": 435 },
+
+  { "notes": ["G4"],              "duration": 217 },
+  { "notes": ["G4", "A4"],        "duration": 217 },
+
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["A4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["A4"], "duration": 217 },
+
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["A4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": null,   "duration": 435 },
+
+  { "notes": ["G4"],       "duration": 217 },
+  { "notes": ["G4", "A4"], "duration": 217 },
+
+  { "notes": ["B4"],  "duration": 217 },
+  { "notes": ["B4"],  "duration": 217 },
+  { "notes": ["B4"],  "duration": 217 },
+  { "notes": ["A4"],  "duration": 217 },
+  { "notes": ["B4"],  "duration": 217 },
+  { "notes": ["C#5"], "duration": 217 },
+
+  { "notes": ["A4"], "duration": 217 },
+  { "notes": ["G4"], "duration": 217 },
+  { "notes": ["A4"], "duration": 217 },
+
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["A4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["A4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": null,   "duration": 435 },
+
+  { "notes": ["G4"],       "duration": 217 },
+  { "notes": ["G4", "A4"], "duration": 217 },
+
+  { "notes": ["B4"],  "duration": 217 },
+  { "notes": ["B4"],  "duration": 217 },
+  { "notes": ["F#5"], "duration": 217 },
+  { "notes": ["E5"],  "duration": 217 },
+  { "notes": ["E5"],  "duration": 217 },
+  { "notes": ["D5"],  "duration": 217 },
+  { "notes": ["B4"],  "duration": 217 },
+  { "notes": ["D5"],  "duration": 217 },
+
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["A4"], "duration": 217 },
+
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["A4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": ["A4"], "duration": 217 },
+  { "notes": ["B4"], "duration": 217 },
+  { "notes": null,   "duration": 435 },
+
+  { "notes": ["G4"],       "duration": 217 },
+  { "notes": ["G4", "A4"], "duration": 217 },
+
+  { "notes": ["B4"],  "duration": 217 },
+  { "notes": ["B4"],  "duration": 217 },
+  { "notes": ["B4"],  "duration": 217 },
+  { "notes": ["A4"],  "duration": 217 },
+  { "notes": ["B4"],  "duration": 217 },
+  { "notes": ["C#5"], "duration": 217 },
+
+  { "notes": ["A4"], "duration": 217 },
+  { "notes": ["G4"], "duration": 217 },
+  { "notes": ["A4"], "duration": 217 },
+
+  { "notes": ["B4"],       "duration": 217 },
+  { "notes": ["B4"],       "duration": 217 },
+  { "notes": ["A4"],       "duration": 217 },
+  { "notes": ["B4"],       "duration": 217 },
+  { "notes": ["A4", "B4"], "duration": 217 },
+  { "notes": ["B4"],       "duration": 435 }
+  ]
+}
