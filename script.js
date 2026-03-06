@@ -106,7 +106,6 @@ KEY_DATA.filter(k => k.type === 'white').forEach(key => {
   el.addEventListener('touchstart', e => { e.preventDefault(); trigger(el, key.note, key.freq); }, { passive: false });
 
   pianoEl.appendChild(el);
-  key.el = el;
   if (key.kb) kbMap[key.kb] = { el, note: key.note, freq: key.freq };
 });
 
@@ -127,7 +126,6 @@ KEY_DATA.forEach(key => {
     el.addEventListener('touchstart', e => { e.preventDefault(); trigger(el, key.note, key.freq); }, { passive: false });
 
     pianoEl.appendChild(el);
-    key.el = el;
     if (key.kb) kbMap[key.kb] = { el, note: key.note, freq: key.freq };
   }
 });
@@ -144,20 +142,37 @@ document.addEventListener('keydown', e => {
 });
 
 /* ── Responsive scale ── */
-// Total piano-case width: 14 keys × WHITE_W + 13 gaps × GAP + 26px padding × 2
-const PIANO_CASE_W = 14 * WHITE_W + 13 * GAP + 52;
-// Total piano-case height: key height + padding-top + padding-bottom
-const PIANO_CASE_H = 215 + 24 + 46;
+const contentWrapper = document.querySelector('.content-wrapper');
 
 function updateScale() {
-  const margin  = 16; // minimum breathing room (8px each side)
-  const scaleW  = (window.innerWidth  - margin) / PIANO_CASE_W;
-  const scaleH  = (window.innerHeight - margin) / (PIANO_CASE_H + 120); // +120 for title/hint
-  const scale   = Math.min(1, scaleW, scaleH);
+  // Reset to 1 so we can measure the true natural dimensions from the DOM
+  document.documentElement.style.setProperty('--piano-scale', '1');
+
+  const nW = contentWrapper.offsetWidth;
+  const nH = contentWrapper.offsetHeight;
+
+  // visualViewport is more accurate on iOS (excludes browser chrome)
+  const vp = window.visualViewport;
+  const vw = vp ? vp.width  : window.innerWidth;
+  const vh = vp ? vp.height : window.innerHeight;
+
+  const margin = 24;
+  const scale  = Math.min(1, (vw - margin) / nW, (vh - margin) / nH);
+
   document.documentElement.style.setProperty('--piano-scale', scale.toFixed(4));
-  document.documentElement.style.setProperty('--piano-case-h', PIANO_CASE_H + 'px');
 }
 
-window.addEventListener('resize', updateScale);
-window.addEventListener('orientationchange', () => setTimeout(updateScale, 150));
+// Use visualViewport resize if available (catches iOS keyboard / chrome changes)
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', updateScale);
+} else {
+  window.addEventListener('resize', updateScale);
+}
+
+// orientationchange fires before the new dimensions are ready;
+// wait for the resize that always follows it
+window.addEventListener('orientationchange', () => {
+  window.addEventListener('resize', updateScale, { once: true });
+});
+
 updateScale();

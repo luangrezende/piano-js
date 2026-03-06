@@ -2,23 +2,26 @@
 
 body {
   background: #0d0d0d;
-  min-height: 100vh;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Content wrapper (scaled as a unit) ── */
+.content-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: fit-content;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
-  user-select: none;
-}
-
-/* ── Title ── */
-.title {
-  color: #7a6848;
-  font-size: 0.75rem;
-  letter-spacing: 0.7em;
-  text-transform: uppercase;
-  margin-bottom: 14px;
-  font-weight: 400;
+  /* translate centers the element, scale shrinks from that center */
+  transform: translate(-50%, -50%) scale(var(--piano-scale, 1));
 }
 
 /* ── Note display ── */
@@ -27,28 +30,40 @@ body {
   color: #b09070;
   font-size: 0.78rem;
   letter-spacing: 0.25em;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
   opacity: 0;
   transition: opacity 0.08s ease;
+  text-align: center;
 }
 .note-display.visible { opacity: 1; }
 
 /* ── Piano case ── */
 .piano-case {
   background: linear-gradient(160deg, #1e1008 0%, #0c0704 55%, #1a0e06 100%);
-  padding: 24px 26px 46px;
+  padding: 14px 26px 46px;
   border-radius: 6px 6px 20px 20px;
   box-shadow:
     0 32px 90px rgba(0, 0, 0, 0.95),
     0 0 0 1px #2c1c0c,
-    0 0 0 3px #09060300,
     inset 0 2px 5px rgba(255, 255, 255, 0.05),
     inset 0 -6px 12px rgba(0, 0, 0, 0.5);
   position: relative;
-  transform: scale(var(--piano-scale, 1));
-  transform-origin: top center;
-  /* compensate layout space lost by scale-down */
-  margin-bottom: calc((var(--piano-scale, 1) - 1) * var(--piano-case-h, 285px));
+}
+
+/* ── Brand name engraved on the case ── */
+.brand {
+  text-align: center;
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.55rem;
+  font-weight: 500;
+  color: #8a6a3a;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+  pointer-events: none;
+  /* debossed engraving: dark shadow above, faint light below */
+  text-shadow:
+    0 -1px 1px rgba(0, 0, 0, 0.6),
+    0  1px 0   rgba(255, 255, 255, 0.07);
 }
 
 /* subtle top sheen */
@@ -215,7 +230,6 @@ body {
   border-radius: 7px;
   position: relative;
   animation: rotatePhone 2.4s ease-in-out infinite;
-  transform-origin: center center;
 }
 
 /* camera dot */
@@ -259,10 +273,4 @@ body {
 
 @media (orientation: portrait) and (max-width: 1024px) {
   .rotate-notice { display: flex; }
-}
-
-@media (orientation: landscape) and (max-height: 500px) {
-  .title        { margin-bottom: 6px; }
-  .note-display { margin-bottom: 10px; }
-  .hint         { margin-top: 12px; }
 }
