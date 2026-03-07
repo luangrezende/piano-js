@@ -1,51 +1,118 @@
 const WHITE_W = 52;
 const BLACK_W = 34;
-const GAP     = 1;
-
-// note, type, frequency (Hz), label, keyboard shortcut
-const KEY_DATA = [
-  { note: 'C4',  type: 'white', freq: 261.63, label: 'A', key: 'a' },
-  { note: 'C#4', type: 'black', freq: 277.18,              key: 'q' },
-  { note: 'D4',  type: 'white', freq: 293.66, label: 'S', key: 's' },
-  { note: 'D#4', type: 'black', freq: 311.13,              key: 'w' },
-  { note: 'E4',  type: 'white', freq: 329.63, label: 'D', key: 'd' },
-  { note: 'F4',  type: 'white', freq: 349.23, label: 'F', key: 'f' },
-  { note: 'F#4', type: 'black', freq: 369.99,              key: 'e' },
-  { note: 'G4',  type: 'white', freq: 392.00, label: 'G', key: 'g' },
-  { note: 'G#4', type: 'black', freq: 415.30,              key: 'r' },
-  { note: 'A4',  type: 'white', freq: 440.00, label: 'H', key: 'h' },
-  { note: 'A#4', type: 'black', freq: 466.16,              key: 't' },
-  { note: 'B4',  type: 'white', freq: 493.88, label: 'J', key: 'j' },
-  { note: 'C5',  type: 'white', freq: 523.25, label: 'K', key: 'k' },
-  { note: 'C#5', type: 'black', freq: 554.37,              key: 'y' },
-  { note: 'D5',  type: 'white', freq: 587.33, label: 'L', key: 'l' },
-  { note: 'D#5', type: 'black', freq: 622.25,              key: 'u' },
-  { note: 'E5',  type: 'white', freq: 659.25, label: 'Z', key: 'z' },
-  { note: 'F5',  type: 'white', freq: 698.46, label: 'X', key: 'x' },
-  { note: 'F#5', type: 'black', freq: 739.99,              key: 'i' },
-  { note: 'G5',  type: 'white', freq: 783.99, label: 'C', key: 'c' },
-  { note: 'G#5', type: 'black', freq: 830.61,              key: 'o' },
-  { note: 'A5',  type: 'white', freq: 880.00, label: 'V', key: 'v' },
-  { note: 'A#5', type: 'black', freq: 932.33,              key: 'p' },
-  { note: 'B5',  type: 'white', freq: 987.77, label: 'B', key: 'b' },
-];
-
-/* ── Audio ── */
+const GAP = 1;
 let audioContext = null;
+let keyData = null;
 
-function getAudioContext() {
-  if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioContext.state === 'suspended') audioContext.resume();
+async function getAudioContext() {
+  if (!audioContext) 
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioContext.state === 'suspended') 
+    await audioContext.resume();
+
   return audioContext;
 }
 
-function playNote(freq) {
-  const ctx = getAudioContext();
-  const t   = ctx.currentTime;
+async function getKeyDataConfig() {
+  const response = await fetch('/config/keyData.json');
+  if (!response.ok) 
+    throw new Error(`Failed to load keyData.json: ${response.status}`);
+  const data = await response.json();
 
-  const master = ctx.createGain();
+  return data.keys;
+}
+
+function buildPiano(keyData) {
+  const pianoElement  = document.getElementById('piano');
+  const noteDisplay = document.getElementById('noteDisplay');
+  let fadeTimer = null;
+
+  function showNote(noteName) {
+    noteDisplay.textContent = noteName;
+    noteDisplay.classList.add('visible');
+    clearTimeout(fadeTimer);
+    fadeTimer = setTimeout(() => noteDisplay.classList.remove('visible'), 1600);
+  }
+
+  function trigger(element, note, frequency) {
+    playNote(frequency);
+    showNote(note);
+    element.classList.add('active');
+  }
+
+  // 1 — white keys (flex flow)
+  keyData.filter(k => k.type === 'white').forEach(key => {
+    const el = document.createElement('div');
+    el.className = 'key-white';
+    key.el = el;
+
+    if (key.label) {
+      const lbl = document.createElement('span');
+      lbl.id = `label-${key.note.toLowerCase()}`;
+      lbl.className = 'key-label';
+      lbl.textContent = key.label;
+      el.appendChild(lbl);
+    }
+
+    el.addEventListener('mousedown',  e => { e.preventDefault(); trigger(el, key.note, key.freq); });
+    el.addEventListener('mouseup',    () => el.classList.remove('active'));
+    el.addEventListener('mouseleave', () => el.classList.remove('active'));
+    el.addEventListener('touchstart', e => { e.preventDefault(); trigger(el, key.note, key.freq); }, { passive: false });
+    el.addEventListener('touchend',   () => el.classList.remove('active'));
+
+    pianoElement.appendChild(el);
+  });
+
+  // 2 — black keys (absolute)
+  let wIdx = -1;
+  keyData.forEach(key => {
+    if (key.type === 'white') {
+      wIdx++;
+    } else {
+      const el = document.createElement('div');
+      el.id = `label-${key.note.toLowerCase()}`;
+      el.className = 'key-black';
+      key.el = el;
+
+      // centre the black key over the boundary between two adjacent white keys
+      const left = (wIdx + 1) * (WHITE_W + GAP) - BLACK_W / 2;
+      el.style.left = left + 'px';
+
+      el.addEventListener('mousedown',  e => { e.preventDefault(); trigger(el, key.note, key.freq); });
+      el.addEventListener('mouseup',    () => el.classList.remove('active'));
+      el.addEventListener('mouseleave', () => el.classList.remove('active'));
+      el.addEventListener('touchstart', e => { e.preventDefault(); trigger(el, key.note, key.freq); }, { passive: false });
+      el.addEventListener('touchend',   () => el.classList.remove('active'));
+
+      pianoElement.appendChild(el);
+    }
+  });
+
+  /* ── Keyboard shortcuts ── */
+  const keyMap = Object.fromEntries(keyData.filter(k => k.key).map(k => [k.key, k]));
+
+  window.addEventListener('keydown', e => {
+    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = keyMap[e.key.toLowerCase()];
+    if (!k || !k.el) return;
+    e.preventDefault();
+    trigger(k.el, k.note, k.freq);
+  });
+
+  window.addEventListener('keyup', e => {
+    const k = keyMap[e.key.toLowerCase()];
+    if (!k || !k.el) return;
+    k.el.classList.remove('active');
+  });
+}
+
+async function playNote(freq) {
+  await getAudioContext();
+  const t = audioContext.currentTime;
+
+  const master = audioContext.createGain();
   master.gain.setValueAtTime(0.30, t);
-  master.connect(ctx.destination);
+  master.connect(audioContext.destination);
 
   // Harmonics that approximate a struck string
   const harmonics = [
@@ -57,8 +124,8 @@ function playNote(freq) {
   ];
 
   harmonics.forEach(({ mult, amp, decay }) => {
-    const osc = ctx.createOscillator();
-    const g   = ctx.createGain();
+    const osc = audioContext.createOscillator();
+    const g   = audioContext.createGain();
     osc.type = 'sine';
     osc.frequency.setValueAtTime(freq * mult, t);
     g.gain.setValueAtTime(amp, t);
@@ -70,83 +137,9 @@ function playNote(freq) {
   });
 }
 
-/* ── Build DOM ── */
-const pianoEl  = document.getElementById('piano');
-const noteDisp = document.getElementById('noteDisplay');
-let   fadeTimer = null;
-
-function showNote(noteName) {
-  noteDisp.textContent = noteName;
-  noteDisp.classList.add('visible');
-  clearTimeout(fadeTimer);
-  fadeTimer = setTimeout(() => noteDisp.classList.remove('visible'), 1600);
-}
-
-function trigger(el, note, freq) {
-  playNote(freq);
-  showNote(note);
-  el.classList.add('active');
-  setTimeout(() => el.classList.remove('active'), 180);
-}
-
-// 1 — white keys (flex flow)
-KEY_DATA.filter(k => k.type === 'white').forEach(key => {
-  const el = document.createElement('div');
-  el.className = 'key-white';
-  key.el = el;
-
-  if (key.label) {
-    const lbl = document.createElement('span');
-    lbl.id = `label-${key.note.toLowerCase()}`;
-    lbl.className = 'key-label';
-    lbl.textContent = key.label;
-    el.appendChild(lbl);
-  }
-
-  el.addEventListener('mousedown', e => { e.preventDefault(); trigger(el, key.note, key.freq); });
-  el.addEventListener('touchstart', e => { e.preventDefault(); trigger(el, key.note, key.freq); }, { passive: false });
-
-  pianoEl.appendChild(el);
-});
-
-// 2 — black keys (absolute)
-let wIdx = -1;
-KEY_DATA.forEach(key => {
-  if (key.type === 'white') {
-    wIdx++;
-  } else {
-    const el = document.createElement('div');
-    el.id = `label-${key.note.toLowerCase()}`;
-    el.className = 'key-black';
-    key.el = el;
-
-    // centre the black key over the boundary between two adjacent white keys
-    const left = (wIdx + 1) * (WHITE_W + GAP) - BLACK_W / 2;
-    el.style.left = left + 'px';
-
-    el.addEventListener('mousedown', e => { e.preventDefault(); trigger(el, key.note, key.freq); });
-    el.addEventListener('touchstart', e => { e.preventDefault(); trigger(el, key.note, key.freq); }, { passive: false });
-
-    pianoEl.appendChild(el);
-  }
-});
-
-/* ── Keyboard shortcuts ── */
-const keyMap = Object.fromEntries(KEY_DATA.filter(k => k.key).map(k => [k.key, k]));
-
-window.addEventListener('keydown', e => {
-  if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
-  const k = keyMap[e.key.toLowerCase()];
-  if (!k || !k.el) return;
-  e.preventDefault();
-  trigger(k.el, k.note, k.freq);
-});
-
-/* ── Responsive scale ── */
-const contentWrapper = document.querySelector('.content-wrapper');
-
 function updateScale() {
   // Reset to 1 so we can measure the true natural dimensions from the DOM
+  const contentWrapper = document.querySelector('.content-wrapper');
   document.documentElement.style.setProperty('--piano-scale', '1');
 
   const nW = contentWrapper.offsetWidth;
@@ -163,48 +156,27 @@ function updateScale() {
   document.documentElement.style.setProperty('--piano-scale', scale.toFixed(4));
 }
 
-// Use visualViewport resize if available (catches iOS keyboard / chrome changes)
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', updateScale);
-} else {
-  window.addEventListener('resize', updateScale);
-}
-
-// orientationchange fires before the new dimensions are ready;
-// wait for the resize that always follows it
-window.addEventListener('orientationchange', () => {
-  window.addEventListener('resize', updateScale, { once: true });
-});
-
-updateScale();
-
-// test env button to check if JS is running
-const testBtn = document.getElementById('test-btn');
-
 async function playSong() {
-  const response = await fetch('../songs/testsong.json');
-  const data = await response.json();
-  const pianoSong = data.notes;
+  const songFile = await fetch('../songs/song1.json');
+  const songData = await songFile.json();
+  const songNotes = songData.musicSheet;
 
-  for (const element of pianoSong) {
-    if (element.notes === null) {
-      await shortPause(element.duration);
+  for (const note of songNotes) {
+    if (note.notes === null) {
+      await shortPause(note.duration);
       continue;
     }
 
-    if (element.notes && element.notes.length > 0) {
-      for (const note of element.notes) {
-        const key = document.getElementById(`label-${note.toLowerCase()}`);
-        if (key) {
-          key.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-        } else {
-          const keyData = KEY_DATA.find(k => k.note === note);
-          if (keyData) playNote(keyData.freq);
-        }
-      }
-    }
+    if (note.notes && note.notes.length > 0) {
+      const keys = note.notes
+        .map(n => document.getElementById(`label-${n.toLowerCase()}`))
+        .filter(Boolean);
 
-    await shortPause(element.duration);
+      keys.forEach(key => key.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })));
+      await shortPause(note.duration);
+      keys.forEach(key => key.dispatchEvent(new MouseEvent('mouseup',   { bubbles: true })));
+      continue;
+    }
   }
 }
 
@@ -212,4 +184,27 @@ async function shortPause(timer) {
   await new Promise(resolve => setTimeout(resolve, timer)); // timer ms
 }
 
-testBtn.addEventListener('click', playSong);
+// initialize heeeeeeeeeere
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', updateScale);
+} else {
+  window.addEventListener('resize', updateScale);
+}
+
+window.addEventListener('orientationchange', () => {
+  window.addEventListener('resize', updateScale, { once: true });
+});
+
+async function init() {
+  keyData = await getKeyDataConfig();
+
+  updateScale();
+  buildPiano(keyData);
+
+  //just test, remove after
+  document.getElementById('play-btn').addEventListener('click', () => {
+    playSong();
+  });
+}
+
+init();
