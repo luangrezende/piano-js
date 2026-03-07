@@ -2,6 +2,6 @@
   "name": "piano-js",
   "version": "1.0.0",
   "scripts": {
-    "start": "npx --yes serve -l 3000 ."
+    "start": "npx --yes serve -l ${PORT:-3000} ."
   }
 }
