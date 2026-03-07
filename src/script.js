@@ -2,32 +2,32 @@ const WHITE_W = 52;
 const BLACK_W = 34;
 const GAP     = 1;
 
-// note, type, frequency (Hz) and key label
+// note, type, frequency (Hz), label, keyboard shortcut
 const KEY_DATA = [
-  { note: 'C4',  type: 'white', freq: 261.63, label: 'C4' },
-  { note: 'C#4', type: 'black', freq: 277.18 },
-  { note: 'D4',  type: 'white', freq: 293.66, label: 'D' },
-  { note: 'D#4', type: 'black', freq: 311.13 },
-  { note: 'E4',  type: 'white', freq: 329.63, label: 'E' },
-  { note: 'F4',  type: 'white', freq: 349.23, label: 'F' },
-  { note: 'F#4', type: 'black', freq: 369.99 },
-  { note: 'G4',  type: 'white', freq: 392.00, label: 'G' },
-  { note: 'G#4', type: 'black', freq: 415.30 },
-  { note: 'A4',  type: 'white', freq: 440.00, label: 'A' },
-  { note: 'A#4', type: 'black', freq: 466.16 },
-  { note: 'B4',  type: 'white', freq: 493.88, label: 'B' },
-  { note: 'C5',  type: 'white', freq: 523.25, label: 'C5' },
-  { note: 'C#5', type: 'black', freq: 554.37 },
-  { note: 'D5',  type: 'white', freq: 587.33, label: 'D' },
-  { note: 'D#5', type: 'black', freq: 622.25 },
-  { note: 'E5',  type: 'white', freq: 659.25, label: 'E' },
-  { note: 'F5',  type: 'white', freq: 698.46, label: 'F' },
-  { note: 'F#5', type: 'black', freq: 739.99 },
-  { note: 'G5',  type: 'white', freq: 783.99, label: 'G' },
-  { note: 'G#5', type: 'black', freq: 830.61 },
-  { note: 'A5',  type: 'white', freq: 880.00, label: 'A' },
-  { note: 'A#5', type: 'black', freq: 932.33 },
-  { note: 'B5',  type: 'white', freq: 987.77, label: 'B' },
+  { note: 'C4',  type: 'white', freq: 261.63, label: 'A', key: 'a' },
+  { note: 'C#4', type: 'black', freq: 277.18,              key: 'q' },
+  { note: 'D4',  type: 'white', freq: 293.66, label: 'S', key: 's' },
+  { note: 'D#4', type: 'black', freq: 311.13,              key: 'w' },
+  { note: 'E4',  type: 'white', freq: 329.63, label: 'D', key: 'd' },
+  { note: 'F4',  type: 'white', freq: 349.23, label: 'F', key: 'f' },
+  { note: 'F#4', type: 'black', freq: 369.99,              key: 'e' },
+  { note: 'G4',  type: 'white', freq: 392.00, label: 'G', key: 'g' },
+  { note: 'G#4', type: 'black', freq: 415.30,              key: 'r' },
+  { note: 'A4',  type: 'white', freq: 440.00, label: 'H', key: 'h' },
+  { note: 'A#4', type: 'black', freq: 466.16,              key: 't' },
+  { note: 'B4',  type: 'white', freq: 493.88, label: 'J', key: 'j' },
+  { note: 'C5',  type: 'white', freq: 523.25, label: 'K', key: 'k' },
+  { note: 'C#5', type: 'black', freq: 554.37,              key: 'y' },
+  { note: 'D5',  type: 'white', freq: 587.33, label: 'L', key: 'l' },
+  { note: 'D#5', type: 'black', freq: 622.25,              key: 'u' },
+  { note: 'E5',  type: 'white', freq: 659.25, label: 'Z', key: 'z' },
+  { note: 'F5',  type: 'white', freq: 698.46, label: 'X', key: 'x' },
+  { note: 'F#5', type: 'black', freq: 739.99,              key: 'i' },
+  { note: 'G5',  type: 'white', freq: 783.99, label: 'C', key: 'c' },
+  { note: 'G#5', type: 'black', freq: 830.61,              key: 'o' },
+  { note: 'A5',  type: 'white', freq: 880.00, label: 'V', key: 'v' },
+  { note: 'A#5', type: 'black', freq: 932.33,              key: 'p' },
+  { note: 'B5',  type: 'white', freq: 987.77, label: 'B', key: 'b' },
 ];
 
 /* ── Audio ── */
@@ -93,6 +93,7 @@ function trigger(el, note, freq) {
 KEY_DATA.filter(k => k.type === 'white').forEach(key => {
   const el = document.createElement('div');
   el.className = 'key-white';
+  key.el = el;
 
   if (key.label) {
     const lbl = document.createElement('span');
@@ -117,6 +118,7 @@ KEY_DATA.forEach(key => {
     const el = document.createElement('div');
     el.id = `label-${key.note.toLowerCase()}`;
     el.className = 'key-black';
+    key.el = el;
 
     // centre the black key over the boundary between two adjacent white keys
     const left = (wIdx + 1) * (WHITE_W + GAP) - BLACK_W / 2;
@@ -127,6 +129,17 @@ KEY_DATA.forEach(key => {
 
     pianoEl.appendChild(el);
   }
+});
+
+/* ── Keyboard shortcuts ── */
+const keyMap = Object.fromEntries(KEY_DATA.filter(k => k.key).map(k => [k.key, k]));
+
+window.addEventListener('keydown', e => {
+  if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = keyMap[e.key.toLowerCase()];
+  if (!k || !k.el) return;
+  e.preventDefault();
+  trigger(k.el, k.note, k.freq);
 });
 
 /* ── Responsive scale ── */

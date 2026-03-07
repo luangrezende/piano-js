@@ -66,6 +66,18 @@ body {
     0  1px 0   rgba(255, 255, 255, 0.07);
 }
 
+.signature {
+  position: absolute;
+  bottom: 12px;
+  right: 18px;
+  font-family: 'Dancing Script', cursive;
+  font-size: 0.72rem;
+  color: #5a3e22;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  user-select: none;
+}
+
 /* subtle top sheen */
 .piano-case::before {
   content: '';
