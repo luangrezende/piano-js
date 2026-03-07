@@ -157,7 +157,7 @@ function updateScale() {
 }
 
 async function playSong() {
-  const songFile = await fetch('../songs/song1.json');
+  const songFile = await fetch('/songs/song1.json');
   const songData = await songFile.json();
   const songNotes = songData.musicSheet;
 
