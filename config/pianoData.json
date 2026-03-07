@@ -1,0 +1,37 @@
+{
+    "brand": "Celina",
+    "signature": "by Luan Gomes",
+    "keyMap" : [
+        { "note": "C4",  "type": "white", "freq": 261.63, "keyboardKey": "a" },
+        { "note": "C#4", "type": "black", "freq": 277.18, "keyboardKey": "q" },
+        { "note": "D4",  "type": "white", "freq": 293.66, "keyboardKey": "s" },
+        { "note": "D#4", "type": "black", "freq": 311.13, "keyboardKey": "w" },
+        { "note": "E4",  "type": "white", "freq": 329.63, "keyboardKey": "d" },
+        { "note": "F4",  "type": "white", "freq": 349.23, "keyboardKey": "f" },
+        { "note": "F#4", "type": "black", "freq": 369.99, "keyboardKey": "e" },
+        { "note": "G4",  "type": "white", "freq": 392.00, "keyboardKey": "g" },
+        { "note": "G#4", "type": "black", "freq": 415.30, "keyboardKey": "r" },
+        { "note": "A4",  "type": "white", "freq": 440.00, "keyboardKey": "h" },
+        { "note": "A#4", "type": "black", "freq": 466.16, "keyboardKey": "t" },
+        { "note": "B4",  "type": "white", "freq": 493.88, "keyboardKey": "j" },
+        { "note": "C5",  "type": "white", "freq": 523.25, "keyboardKey": "k" },
+        { "note": "C#5", "type": "black", "freq": 554.37, "keyboardKey": "y" },
+        { "note": "D5",  "type": "white", "freq": 587.33, "keyboardKey": "l" },
+        { "note": "D#5", "type": "black", "freq": 622.25, "keyboardKey": "u" },
+        { "note": "E5",  "type": "white", "freq": 659.25, "keyboardKey": ";" },
+        { "note": "F5",  "type": "white", "freq": 698.46, "keyboardKey": "z" },
+        { "note": "F#5", "type": "black", "freq": 739.99, "keyboardKey": "i" },
+        { "note": "G5",  "type": "white", "freq": 783.99, "keyboardKey": "x" },
+        { "note": "G#5", "type": "black", "freq": 830.61, "keyboardKey": "o" },
+        { "note": "A5",  "type": "white", "freq": 880.00, "keyboardKey": "c" },
+        { "note": "A#5", "type": "black", "freq": 932.33, "keyboardKey": "p" },
+        { "note": "B5",  "type": "white", "freq": 987.77, "keyboardKey": "v" }
+    ],
+    "harmonics": [
+        { "mult": 1, "amp": 0.60, "decay": 3.2 },
+        { "mult": 2, "amp": 0.22, "decay": 2.0 },
+        { "mult": 3, "amp": 0.10, "decay": 1.4 },
+        { "mult": 4, "amp": 0.05, "decay": 0.9 },
+        { "mult": 5, "amp": 0.02, "decay": 0.6 }
+    ]
+}

@@ -159,10 +159,27 @@
     { "notes": ["A5"], "duration": 160 },
     { "notes": ["A5"], "duration": 160 },
     { "notes": ["B5"], "duration": 160 },
-    { "notes": ["A5"], "duration": 210 },
-    { "notes": ["E4", "G5"], "duration": 360 },
-    { "notes": ["F5"], "duration": 160 },
-    { "notes": ["G5"], "duration": 160 },
-    { "notes": ["E5"], "duration": 160 }
+    { "notes": ["A5"], "duration": 160 },
+
+    { "notes": null, "duration": 50 },
+
+    { "notes": ["E4", "G5"], "duration": 320 },
+    { "notes": ["F5"], "duration": 180 },
+    { "notes": ["G5"], "duration": 180 },
+    { "notes": ["E5"], "duration": 180 },
+
+    { "notes": null, "duration": 180 },
+
+    { "notes": ["E4", "G5"], "duration": 320 },
+    { "notes": ["F5"], "duration": 180 },
+    { "notes": ["G5"], "duration": 180 },
+    { "notes": ["E5"], "duration": 180 },
+
+    { "notes": null, "duration": 180 },
+
+    { "notes": ["E4", "G5"], "duration": 480 },
+    { "notes": ["F5"], "duration": 250 },
+    { "notes": ["G5"], "duration": 250 },
+    { "notes": ["E5"], "duration": 250 }
   ]
 }

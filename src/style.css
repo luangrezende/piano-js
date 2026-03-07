@@ -118,7 +118,6 @@ body {
   align-items: flex-end;
   justify-content: center;
   padding-bottom: 10px;
-  transition: background 0.06s ease, transform 0.06s ease, box-shadow 0.06s ease;
   box-shadow:
     inset 1px 0 0 rgba(255, 255, 255, 0.6),
     inset -1px 0 0 rgba(0, 0, 0, 0.04),
@@ -134,14 +133,19 @@ body {
   );
 }
 
+@keyframes key-white-press {
+  from { transform: translateY(0); }
+  to   { transform: translateY(3px); }
+}
+
 .key-white.active {
+  animation: key-white-press 0.06s ease forwards;
   background: linear-gradient(180deg,
     #d6cebf 0%,
     #ddd6c6 12%,
     #d2cabb 80%,
     #c6bead 100%
   );
-  transform: translateY(3px);
   box-shadow:
     inset 1px 0 0 rgba(255, 255, 255, 0.3),
     inset 0 4px 10px rgba(0, 0, 0, 0.22);
@@ -153,6 +157,15 @@ body {
   letter-spacing: 0.04em;
   pointer-events: none;
   line-height: 1;
+}
+
+.key-label--black {
+  position: absolute;
+  bottom: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.28);
 }
 
 /* ── Black keys ── */
@@ -170,7 +183,6 @@ body {
   border-radius: 0 0 5px 5px;
   cursor: pointer;
   z-index: 2;
-  transition: background 0.06s ease, transform 0.06s ease, box-shadow 0.06s ease;
   box-shadow:
     0 10px 22px rgba(0, 0, 0, 0.85),
     inset 1px 0 0 rgba(255, 255, 255, 0.07),
@@ -200,14 +212,19 @@ body {
   );
 }
 
+@keyframes key-black-press {
+  from { transform: translateY(0); }
+  to   { transform: translateY(3px); }
+}
+
 .key-black.active {
+  animation: key-black-press 0.06s ease forwards;
   background: linear-gradient(180deg,
     #303030 0%,
     #262626 55%,
     #363632 92%,
     #423e38 100%
   );
-  transform: translateY(3px);
   box-shadow:
     0 5px 10px rgba(0, 0, 0, 0.85),
     inset 0 3px 6px rgba(255, 255, 255, 0.06);

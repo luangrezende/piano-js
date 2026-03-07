@@ -1,137 +1,160 @@
-const WHITE_W = 52;
-const BLACK_W = 34;
-const GAP = 1;
-let audioContext = null;
-let keyData = null;
+let pianoData;
+let audioContext;
+let masterGain;
 
 async function getAudioContext() {
-  if (!audioContext) 
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioContext.state === 'suspended') 
+  if (!audioContext) {
+    audioContext = new AudioContext();
+
+    masterGain = audioContext.createGain();
+    masterGain.gain.setValueAtTime(0.3, audioContext.currentTime);
+    masterGain.connect(audioContext.destination);
+  }
+
+  if (audioContext.state === 'suspended') {
     await audioContext.resume();
+  }
 
   return audioContext;
 }
 
-async function getKeyDataConfig() {
-  const response = await fetch('/config/keyData.json');
+async function getPianoDataConfig() {
+  const response = await fetch('/config/pianoData.json');
   if (!response.ok) 
-    throw new Error(`Failed to load keyData.json: ${response.status}`);
-  const data = await response.json();
+    throw new Error(`Failed to load pianoData.json: ${response.status}`);
 
-  return data.keys;
+  return await response.json();
 }
 
-function buildPiano(keyData) {
-  const pianoElement  = document.getElementById('piano');
-  const noteDisplay = document.getElementById('noteDisplay');
-  let fadeTimer = null;
+function trigger(element, frequency) {
+  playNote(frequency);
+  element.classList.remove('active');
+  void element.offsetWidth; // force reflow so the animation restarts (think in a better solution for this gambiarra)
+  element.classList.add('active');
+}
 
-  function showNote(noteName) {
-    noteDisplay.textContent = noteName;
-    noteDisplay.classList.add('visible');
-    clearTimeout(fadeTimer);
-    fadeTimer = setTimeout(() => noteDisplay.classList.remove('visible'), 1600);
-  }
+function setupKeyEventListeners(element, key) {
+  const deactivate = () => element.classList.remove('active');
 
-  function trigger(element, note, frequency) {
-    playNote(frequency);
-    showNote(note);
-    element.classList.add('active');
-  }
-
-  // 1 — white keys (flex flow)
-  keyData.filter(k => k.type === 'white').forEach(key => {
-    const el = document.createElement('div');
-    el.className = 'key-white';
-    key.el = el;
-
-    if (key.label) {
-      const lbl = document.createElement('span');
-      lbl.id = `label-${key.note.toLowerCase()}`;
-      lbl.className = 'key-label';
-      lbl.textContent = key.label;
-      el.appendChild(lbl);
-    }
-
-    el.addEventListener('mousedown',  e => { e.preventDefault(); trigger(el, key.note, key.freq); });
-    el.addEventListener('mouseup',    () => el.classList.remove('active'));
-    el.addEventListener('mouseleave', () => el.classList.remove('active'));
-    el.addEventListener('touchstart', e => { e.preventDefault(); trigger(el, key.note, key.freq); }, { passive: false });
-    el.addEventListener('touchend',   () => el.classList.remove('active'));
-
-    pianoElement.appendChild(el);
-  });
-
-  // 2 — black keys (absolute)
-  let wIdx = -1;
-  keyData.forEach(key => {
-    if (key.type === 'white') {
-      wIdx++;
-    } else {
-      const el = document.createElement('div');
-      el.id = `label-${key.note.toLowerCase()}`;
-      el.className = 'key-black';
-      key.el = el;
-
-      // centre the black key over the boundary between two adjacent white keys
-      const left = (wIdx + 1) * (WHITE_W + GAP) - BLACK_W / 2;
-      el.style.left = left + 'px';
-
-      el.addEventListener('mousedown',  e => { e.preventDefault(); trigger(el, key.note, key.freq); });
-      el.addEventListener('mouseup',    () => el.classList.remove('active'));
-      el.addEventListener('mouseleave', () => el.classList.remove('active'));
-      el.addEventListener('touchstart', e => { e.preventDefault(); trigger(el, key.note, key.freq); }, { passive: false });
-      el.addEventListener('touchend',   () => el.classList.remove('active'));
-
-      pianoElement.appendChild(el);
-    }
-  });
-
-  /* ── Keyboard shortcuts ── */
-  const keyMap = Object.fromEntries(keyData.filter(k => k.key).map(k => [k.key, k]));
-
-  window.addEventListener('keydown', e => {
-    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
-    const k = keyMap[e.key.toLowerCase()];
-    if (!k || !k.el) return;
+  const handleStart = (e) => {
     e.preventDefault();
-    trigger(k.el, k.note, k.freq);
+    trigger(element, key.freq);
+  };
+
+  element.addEventListener('mousedown', handleStart);
+  element.addEventListener('mouseup', deactivate);
+  element.addEventListener('mouseleave', deactivate);
+
+  element.addEventListener('touchstart', handleStart, { passive: false });
+  element.addEventListener('touchend', deactivate);
+
+  return element;
+}
+
+function createKeyLabel(key, element) {
+  const label = document.createElement('span');
+
+  label.id = `label-${key.note.toLowerCase()}`;
+  label.className = 'key-label key-label--' + key.type;
+  label.textContent = key.keyboardKey.toUpperCase();
+  element.appendChild(label);
+}
+
+function createWhiteKey(key, pianoElement) {
+  const element = document.createElement('div');
+  element.className = 'key-white';
+  key.el = element;
+  createKeyLabel(key, element);
+  pianoElement.appendChild(setupKeyEventListeners(element, key));
+}
+
+function createBlackKey(key, keys, pianoElement) {
+  const BLACK_W = 34;
+  const element = document.createElement('div');
+
+  element.id = `label-${key.note.toLowerCase()}`;
+  element.className = 'key-black';
+  key.el = element;
+  createKeyLabel(key, element);
+
+  const nextWhite = keys.slice(keys.indexOf(key) + 1).find(k => k.type === 'white');
+  element.style.left = nextWhite.el.offsetLeft - BLACK_W / 2 + 'px';
+
+  pianoElement.appendChild(setupKeyEventListeners(element, key));
+}
+
+function setupKeyboardShortcuts(keys) {
+  const keyMap = Object.fromEntries(
+    keys
+      .filter(key => key.keyboardKey)
+      .map(key => [key.keyboardKey.toLowerCase(), key])
+  );
+
+  const getMappedKey = (e) => keyMap[e.key?.toLowerCase()];
+
+  window.addEventListener('keydown', (e) => {
+    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+
+    const key = getMappedKey(e);
+    if (!key?.el) return;
+
+    e.preventDefault();
+    trigger(key.el, key.freq);
   });
 
-  window.addEventListener('keyup', e => {
-    const k = keyMap[e.key.toLowerCase()];
-    if (!k || !k.el) return;
-    k.el.classList.remove('active');
+  window.addEventListener('keyup', (e) => {
+    const key = getMappedKey(e);
+    if (!key?.el) return;
+
+    key.el.classList.remove('active');
   });
 }
 
-async function playNote(freq) {
+function buildPiano() {
+  const pianoElement = document.getElementById('piano');
+  const pianoBrand = document.getElementById('piano-brand');
+  const pianoSignature = document.getElementById('piano-signature');
+  const keys = pianoData?.keyMap;
+
+  if (!pianoElement || !pianoBrand || !pianoSignature || !Array.isArray(keys)) {
+    return;
+  }
+
+  pianoBrand.textContent = pianoData.brand;
+  pianoSignature.textContent = pianoData.signature;
+
+  const whiteKeys = keys.filter(key => key.type === 'white');
+  const blackKeys = keys.filter(key => key.type === 'black');
+
+  whiteKeys.forEach(key => createWhiteKey(key, pianoElement));
+  blackKeys.forEach(key => createBlackKey(key, keys, pianoElement));
+
+  setupKeyboardShortcuts(keys);
+}
+
+async function playNote(frequency) {
   await getAudioContext();
+
+  const harmonics = pianoData?.harmonics;
+  if (!Array.isArray(harmonics) || !frequency) {
+    return;
+  }
+
   const t = audioContext.currentTime;
-
-  const master = audioContext.createGain();
-  master.gain.setValueAtTime(0.30, t);
-  master.connect(audioContext.destination);
-
-  // Harmonics that approximate a struck string
-  const harmonics = [
-    { mult: 1, amp: 0.60, decay: 3.2 },
-    { mult: 2, amp: 0.22, decay: 2.0 },
-    { mult: 3, amp: 0.10, decay: 1.4 },
-    { mult: 4, amp: 0.05, decay: 0.9 },
-    { mult: 5, amp: 0.02, decay: 0.6 },
-  ];
 
   harmonics.forEach(({ mult, amp, decay }) => {
     const osc = audioContext.createOscillator();
-    const g   = audioContext.createGain();
+    const gain = audioContext.createGain();
+
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq * mult, t);
-    g.gain.setValueAtTime(amp, t);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + decay);
-    osc.connect(g);
-    g.connect(master);
+    osc.frequency.setValueAtTime(frequency * mult, t);
+
+    gain.gain.setValueAtTime(amp, t);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + decay);
+
+    osc.connect(gain);
+    gain.connect(masterGain);
+
     osc.start(t);
     osc.stop(t + decay);
   });
@@ -196,12 +219,11 @@ window.addEventListener('orientationchange', () => {
 });
 
 async function init() {
-  keyData = await getKeyDataConfig();
-
+  pianoData = await getPianoDataConfig();
   updateScale();
-  buildPiano(keyData);
+  buildPiano();
 
-  //just test, remove after
+  //TODO: just test, remove this block after
   document.getElementById('play-btn').addEventListener('click', () => {
     playSong();
   });
