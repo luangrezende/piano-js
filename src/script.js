@@ -1,6 +1,8 @@
 let pianoData;
 let audioContext;
 let masterGain;
+let songsData = [];
+let songAbortController = null;
 
 async function getAudioContext() {
   if (!audioContext) {
@@ -24,6 +26,28 @@ async function getPianoDataConfig() {
     throw new Error(`Failed to load pianoData.json: ${response.status}`);
 
   return await response.json();
+}
+
+async function getSongsJsonFiles() {
+  const response = await fetch('/config/songsData.json');
+
+  if (!response.ok) 
+    throw new Error(`Failed to load songsData.json: ${response.status}`);
+
+  return await response.json();
+}
+
+async function populateSongList(songsData) {
+  const songListElement = document.getElementById('song-list');
+  if (!songListElement) 
+    return;
+
+  songsData.songs.forEach(song => {
+    const listItem = document.createElement('option');
+    listItem.textContent = song.title;
+    listItem.value = song.filepath;
+    songListElement.appendChild(listItem);
+  });
 }
 
 function trigger(element, frequency) {
@@ -150,7 +174,7 @@ async function playNote(frequency) {
     osc.frequency.setValueAtTime(frequency * mult, currentTime);
 
     gain.gain.setValueAtTime(amp, currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.0055, currentTime + decay);
+    gain.gain.exponentialRampToValueAtTime(0.0025, currentTime + decay);
 
     osc.connect(gain);
     gain.connect(masterGain);
@@ -160,66 +184,66 @@ async function playNote(frequency) {
   });
 }
 
-function updateScale() {
-  // Reset to 1 so we can measure the true natural dimensions from the DOM
-  const contentWrapper = document.querySelector('.content-wrapper');
-  document.documentElement.style.setProperty('--piano-scale', '1');
-
-  const nW = contentWrapper.offsetWidth;
-  const nH = contentWrapper.offsetHeight;
-
-  // visualViewport is more accurate on iOS (excludes browser chrome)
-  const vp = window.visualViewport;
-  const vw = vp ? vp.width  : window.innerWidth;
-  const vh = vp ? vp.height : window.innerHeight;
-
-  const margin = 24;
-  const scale  = Math.min(1, (vw - margin) / nW, (vh - margin) / nH);
-
-  document.documentElement.style.setProperty('--piano-scale', scale.toFixed(4));
+function stopSong() {
+  songAbortController?.abort();
+  songAbortController = null;
 }
 
-async function playSong() {
-  const songFile = await fetch('/songs/song3.json');
+async function playSong(selectedSong) {
+  stopSong();
+  songAbortController = new AbortController();
+  const signal = songAbortController.signal;
+
+  const songFile = await fetch(`${selectedSong.value}`);
   const songData = await songFile.json();
   const songNotes = songData.musicSheet;
 
   for (const note of songNotes) {
-    if (note.notes === null) {
-      await shortPause(note.duration);
+    if (signal.aborted) break;
+
+    if (!note.notes || note.notes.length === 0) {
+      await shortPause(note.duration, signal);
       continue;
     }
 
-    if (note.notes && note.notes.length > 0) {
-      const keys = note.notes
-        .map(n => document.getElementById(`label-${n.toLowerCase()}`))
-        .filter(Boolean);
+    const keys = note.notes
+      .map(n => document.getElementById(`label-${n.toLowerCase()}`))
+      .filter(Boolean);
 
-      keys.forEach(key => key.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })));
-      await shortPause(note.duration);
-      keys.forEach(key => key.dispatchEvent(new MouseEvent('mouseup',   { bubbles: true })));
-      continue;
-    }
+    keys.forEach(key => key.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })));
+    await shortPause(note.duration, signal);
+    keys.forEach(key => key.dispatchEvent(new MouseEvent('mouseup', { bubbles: true })));
   }
 }
 
-async function shortPause(timer) {
-  await new Promise(resolve => setTimeout(resolve, timer)); // timer ms
+async function shortPause(timer, signal) {
+  await new Promise(resolve => {
+    const timeout = setTimeout(resolve, timer);
+    signal?.addEventListener('abort', () => { clearTimeout(timeout); resolve(); }, { once: true });
+  });
 }
 
 // initialize heeeeeeeeeere
 async function init() {
+  const btnPlay = document.getElementById('play-btn');
   pianoData = await getPianoDataConfig();
-  updateScale();
+  songsData = await getSongsJsonFiles();
   buildPiano();
+  populateSongList(songsData);
 
-  window.addEventListener('orientationchange', () => {
-    window.addEventListener('resize', updateScale, { once: true });
-  });
+  btnPlay.addEventListener('click', () => {
+    if (btnPlay.classList.contains('playing')) {
+      stopSong();
+      btnPlay.textContent = 'play';
+      btnPlay.classList.remove('playing');
+      return;
+    }
 
-  //TODO: just test, remove this block after
-  document.getElementById('play-btn').addEventListener('click', () => {
-    playSong();
+    const selectedSong = document.getElementById('song-list');
+    playSong(selectedSong);
+
+    btnPlay.textContent = 'stop';
+    btnPlay.classList.add('playing');
   });
 }
 

@@ -24,19 +24,6 @@ body {
   transform: translate(-50%, -50%) scale(var(--piano-scale, 1));
 }
 
-/* ── Note display ── */
-.note-display {
-  height: 22px;
-  color: #b09070;
-  font-size: 0.78rem;
-  letter-spacing: 0.25em;
-  margin-bottom: 20px;
-  opacity: 0;
-  transition: opacity 0.08s ease;
-  text-align: center;
-}
-.note-display.visible { opacity: 1; }
-
 /* ── Piano case ── */
 .piano-case {
   background: linear-gradient(160deg, #1e1008 0%, #0c0704 55%, #1a0e06 100%);
@@ -237,69 +224,4 @@ body {
   font-size: 0.65rem;
   letter-spacing: 0.18em;
   font-family: 'Courier New', monospace;
-}
-
-/* ── Rotate notice (portrait on mobile) ── */
-.rotate-notice {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: #0d0d0d;
-  z-index: 999;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-}
-
-.rotate-phone {
-  width: 38px;
-  height: 58px;
-  border: 2.5px solid #7a6848;
-  border-radius: 7px;
-  position: relative;
-  animation: rotatePhone 2.4s ease-in-out infinite;
-}
-
-/* camera dot */
-.rotate-phone::before {
-  content: '';
-  position: absolute;
-  top: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #7a6848;
-}
-
-/* home bar */
-.rotate-phone::after {
-  content: '';
-  position: absolute;
-  bottom: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 14px;
-  height: 2.5px;
-  border-radius: 2px;
-  background: #7a6848;
-}
-
-@keyframes rotatePhone {
-  0%        { transform: rotate(0deg);  }
-  35%, 65%  { transform: rotate(90deg); }
-  100%      { transform: rotate(90deg); }
-}
-
-.rotate-text {
-  color: #7a6848;
-  font-size: 0.72rem;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-}
-
-@media (orientation: portrait) and (max-width: 1024px) {
-  .rotate-notice { display: flex; }
 }

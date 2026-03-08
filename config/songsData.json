@@ -1,0 +1,16 @@
+{
+    "songs": [
+        {
+            "title": "Carol Of The Bells",
+            "filepath": "/songs/song1.json"
+        },
+        {
+            "title": "Interstellar",
+            "filepath": "/songs/song2.json"
+        },
+        {
+            "title": "Married Life",
+            "filepath": "/songs/song3.json"
+        }
+    ]
+}
