@@ -107,7 +107,7 @@ function createBlackKey(key, keys, pianoElement) {
 function triggerKey(element, frequency) {
   playNote(frequency);
   element.classList.remove('active');
-  void element.offsetWidth; // force reflow so the animation restarts (think in a better solution for this gambiarra)
+  void element.offsetWidth; // force reflow to restart animation (need to think a better solution for this gambiarra)
   element.classList.add('active');
 }
 
