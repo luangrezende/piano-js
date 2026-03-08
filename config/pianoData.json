@@ -27,11 +27,12 @@
         { "note": "A#5", "type": "black", "freq": 932.33, "keyboardKey": "p" },
         { "note": "B5",  "type": "white", "freq": 987.77, "keyboardKey": "v" }
     ],
-    "harmonics": [
-        { "mult": 1, "amp": 0.60, "decay": 3.2 },
-        { "mult": 2, "amp": 0.22, "decay": 2.0 },
-        { "mult": 3, "amp": 0.10, "decay": 1.4 },
-        { "mult": 4, "amp": 0.05, "decay": 0.9 },
-        { "mult": 5, "amp": 0.02, "decay": 0.6 }
+   "harmonics": [
+        { "freqMult": 1, "amplitude": 0.65, "decay": 2.8 },
+        { "freqMult": 2, "amplitude": 0.28, "decay": 1.8 },
+        { "freqMult": 3, "amplitude": 0.14, "decay": 1.2 },
+        { "freqMult": 4, "amplitude": 0.07, "decay": 0.8 },
+        { "freqMult": 5, "amplitude": 0.03, "decay": 0.5 },
+        { "freqMult": 6, "amplitude": 0.015, "decay": 0.35 }
     ]
 }

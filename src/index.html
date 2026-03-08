@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Piano</title>
+  <title>Virtual Piano</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
@@ -11,11 +11,16 @@
 </head>
 <body>
 
+  <div class="label-toggle">
+    <button class="label-toggle__btn active" id="toggle-keys"></button>
+    <button class="label-toggle__btn" id="toggle-notes"></button>
+  </div>
+
   <div class="song-selector">
-    <!-- TODO: desenvolver estrutura para pegar valores de forma dinamica -->
-    <select id="song-list">
-    </select>
-    <button id="play-btn">play</button>
+    <select id="song-list"></select>
+    <button id="play-btn">
+      <span id="play-icon">&#9654;</span>
+    </button>
   </div>
 
   <div class="content-wrapper">

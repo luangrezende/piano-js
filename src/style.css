@@ -11,7 +11,6 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ── Content wrapper (scaled as a unit) ── */
 .content-wrapper {
   position: absolute;
   top: 50%;
@@ -20,11 +19,9 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* translate centers the element, scale shrinks from that center */
   transform: translate(-50%, -50%) scale(var(--piano-scale, 1));
 }
 
-/* ── Piano case ── */
 .piano-case {
   background: linear-gradient(160deg, #1e1008 0%, #0c0704 55%, #1a0e06 100%);
   padding: 14px 26px 46px;
@@ -37,7 +34,6 @@ body {
   position: relative;
 }
 
-/* ── Brand name engraved on the case ── */
 .brand {
   text-align: center;
   font-family: 'Dancing Script', cursive;
@@ -47,7 +43,6 @@ body {
   letter-spacing: 0.06em;
   margin-bottom: 12px;
   pointer-events: none;
-  /* debossed engraving: dark shadow above, faint light below */
   text-shadow:
     0 -1px 1px rgba(0, 0, 0, 0.6),
     0  1px 0   rgba(255, 255, 255, 0.07);
@@ -62,10 +57,8 @@ body {
   color: #5a3e22;
   letter-spacing: 0.04em;
   pointer-events: none;
-  user-select: none;
 }
 
-/* subtle top sheen */
 .piano-case::before {
   content: '';
   position: absolute;
@@ -75,7 +68,6 @@ body {
   pointer-events: none;
 }
 
-/* ── Keys container ── */
 .piano-keys {
   position: relative;
   display: flex;
@@ -84,7 +76,6 @@ body {
   line-height: 0;
 }
 
-/* ── White keys ── */
 .key-white {
   flex-shrink: 0;
   width: 52px;
@@ -155,7 +146,6 @@ body {
   color: rgba(255, 255, 255, 0.28);
 }
 
-/* ── Black keys ── */
 .key-black {
   position: absolute;
   top: 0;
@@ -177,7 +167,6 @@ body {
     inset 0 -4px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* gloss strip */
 .key-black::after {
   content: '';
   position: absolute;
@@ -217,7 +206,104 @@ body {
     inset 0 3px 6px rgba(255, 255, 255, 0.06);
 }
 
-/* ── Hint ── */
+.label-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 20px;
+  padding: 3px;
+  gap: 2px;
+  z-index: 100;
+}
+
+.label-toggle__btn {
+  padding: 5px 13px;
+  border: none;
+  border-radius: 16px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.28);
+  font-family: 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.label-toggle__btn:hover {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.label-toggle__btn.active {
+  background: rgba(255, 255, 255, 0.11);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.song-selector {
+  position: fixed;
+  top: 56px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 100;
+}
+
+.song-selector select {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  padding: 5px 14px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.18s ease, color 0.18s ease;
+}
+
+.song-selector select:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.song-selector select option {
+  background: #1a1a1a;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+#play-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  flex-shrink: 0;
+}
+
+#play-btn:hover {
+  background: rgba(255, 255, 255, 0.11);
+  color: rgba(255, 255, 255, 0.78);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+#play-btn.playing {
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
 .hint {
   margin-top: 32px;
   color: #383028;

@@ -1,9 +1,13 @@
+// State
 let pianoData;
 let audioContext;
 let masterGain;
 let songsData = [];
 let songAbortController = null;
+let toggleBtns;
+let btnPlay;
 
+// Audio
 async function getAudioContext() {
   if (!audioContext) {
     audioContext = new AudioContext();
@@ -20,66 +24,59 @@ async function getAudioContext() {
   return audioContext;
 }
 
-async function getPianoDataConfig() {
-  const response = await fetch('/config/pianoData.json');
-  if (!response.ok) 
-    throw new Error(`Failed to load pianoData.json: ${response.status}`);
+async function playNote(frequency) {
+  console.log('Playing note with frequency:', frequency);
 
-  return await response.json();
-}
+  await getAudioContext();
 
-async function getSongsJsonFiles() {
-  const response = await fetch('/config/songsData.json');
+  const harmonics = pianoData?.harmonics;
+  const currentTime = audioContext.currentTime;
 
-  if (!response.ok) 
-    throw new Error(`Failed to load songsData.json: ${response.status}`);
+  harmonics.forEach(({ freqMult, amplitude, decay }) => {
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
 
-  return await response.json();
-}
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(frequency * freqMult, currentTime);
 
-async function populateSongList(songsData) {
-  const songListElement = document.getElementById('song-list');
-  if (!songListElement) 
-    return;
+    gain.gain.setValueAtTime(amplitude, currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0025, currentTime + decay);
 
-  songsData.songs.forEach(song => {
-    const listItem = document.createElement('option');
-    listItem.textContent = song.title;
-    listItem.value = song.filepath;
-    songListElement.appendChild(listItem);
+    oscillator.connect(gain);
+    gain.connect(masterGain);
+
+    oscillator.start(currentTime);
+    oscillator.stop(currentTime + decay);
   });
 }
 
-function trigger(element, frequency) {
-  playNote(frequency);
-  element.classList.remove('active');
-  void element.offsetWidth; // force reflow so the animation restarts (think in a better solution for this gambiarra)
-  element.classList.add('active');
+// Data loading
+async function getPianoDataConfig() {
+  const response = await fetchJSON('/config/pianoData.json');
+  return response;
 }
 
-function setupKeyEventListeners(element, key) {
-  const deactivate = () => element.classList.remove('active');
-
-  const handleStart = (e) => {
-    e.preventDefault();
-    trigger(element, key.freq);
-  };
-
-  element.addEventListener('mousedown', handleStart);
-  element.addEventListener('mouseup', deactivate);
-  element.addEventListener('mouseleave', deactivate);
-
-  element.addEventListener('touchstart', handleStart, { passive: false });
-  element.addEventListener('touchend', deactivate);
-
-  return element;
+async function getSongsData() {
+  const response = await fetchJSON('/config/songsData.json');
+  return response;
 }
 
+async function fetchJSON(path) {
+  const response = await fetch(path);
+  if (!response.ok) 
+    throw new Error(`Failed to load ${path}: ${response.status}`);
+  
+  return response.json();
+}
+
+// Piano
 function createKeyLabel(key, element) {
   const label = document.createElement('span');
 
   label.id = `label-${key.note.toLowerCase()}`;
   label.className = 'key-label key-label--' + key.type;
+  label.dataset.keyboard = key.keyboardKey.toUpperCase();
+  label.dataset.note = key.note;
   label.textContent = key.keyboardKey.toUpperCase();
   element.appendChild(label);
 }
@@ -107,6 +104,31 @@ function createBlackKey(key, keys, pianoElement) {
   pianoElement.appendChild(setupKeyEventListeners(element, key));
 }
 
+function triggerKey(element, frequency) {
+  playNote(frequency);
+  element.classList.remove('active');
+  void element.offsetWidth; // force reflow so the animation restarts (think in a better solution for this gambiarra)
+  element.classList.add('active');
+}
+
+function setupKeyEventListeners(element, key) {
+  const deactivate = () => element.classList.remove('active');
+
+  const handleStart = (e) => {
+    e.preventDefault();
+    triggerKey(element, key.freq);
+  };
+
+  element.addEventListener('mousedown', handleStart);
+  element.addEventListener('mouseup', deactivate);
+  element.addEventListener('mouseleave', deactivate);
+
+  element.addEventListener('touchstart', handleStart, { passive: false });
+  element.addEventListener('touchend', deactivate);
+
+  return element;
+}
+
 function setupKeyboardShortcuts(keys) {
   const keyMap = Object.fromEntries(
     keys
@@ -123,7 +145,7 @@ function setupKeyboardShortcuts(keys) {
     if (!key?.el) return;
 
     e.preventDefault();
-    trigger(key.el, key.freq);
+    triggerKey(key.el, key.freq);
   });
 
   window.addEventListener('keyup', (e) => {
@@ -156,31 +178,11 @@ function buildPiano() {
   setupKeyboardShortcuts(keys);
 }
 
-async function playNote(frequency) {
-  await getAudioContext();
-
-  const harmonics = pianoData?.harmonics;
-  if (!Array.isArray(harmonics) || !frequency) {
-    return;
-  }
-
-  const currentTime = audioContext.currentTime;
-
-  harmonics.forEach(({ mult, amp, decay }) => {
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(frequency * mult, currentTime);
-
-    gain.gain.setValueAtTime(amp, currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.0025, currentTime + decay);
-
-    osc.connect(gain);
-    gain.connect(masterGain);
-
-    osc.start(currentTime);
-    osc.stop(currentTime + decay);
+// Song player
+async function shortPause(timer, signal) {
+  await new Promise(resolve => {
+    const timeout = setTimeout(resolve, timer);
+    signal?.addEventListener('abort', () => { clearTimeout(timeout); resolve(); }, { once: true });
   });
 }
 
@@ -194,8 +196,7 @@ async function playSong(selectedSong) {
   songAbortController = new AbortController();
   const signal = songAbortController.signal;
 
-  const songFile = await fetch(`${selectedSong.value}`);
-  const songData = await songFile.json();
+  const songData = await fetchJSON(`${selectedSong.value}`);
   const songNotes = songData.musicSheet;
 
   for (const note of songNotes) {
@@ -216,35 +217,61 @@ async function playSong(selectedSong) {
   }
 }
 
-async function shortPause(timer, signal) {
-  await new Promise(resolve => {
-    const timeout = setTimeout(resolve, timer);
-    signal?.addEventListener('abort', () => { clearTimeout(timeout); resolve(); }, { once: true });
+// UI
+async function populateSongList(songsData) {
+  const songListElement = document.getElementById('song-list');
+  if (!songListElement) 
+    return;
+
+  songsData.songs.forEach(song => {
+    const listItem = document.createElement('option');
+    listItem.textContent = song.title;
+    listItem.value = song.filepath;
+    songListElement.appendChild(listItem);
   });
 }
 
-// initialize heeeeeeeeeere
-async function init() {
-  const btnPlay = document.getElementById('play-btn');
-  pianoData = await getPianoDataConfig();
-  songsData = await getSongsJsonFiles();
-  buildPiano();
-  populateSongList(songsData);
+function setupToggleListeners() {
+  document.getElementById('toggle-keys').addEventListener('click', () => {
+    document.querySelectorAll('.key-label').forEach(el => el.textContent = el.dataset.keyboard);
+    toggleBtns.forEach(b => b.classList.remove('active'));
+    document.getElementById('toggle-keys').classList.add('active');
+  });
 
+  document.getElementById('toggle-notes').addEventListener('click', () => {
+    document.querySelectorAll('.key-label').forEach(el => el.textContent = el.dataset.note);
+    toggleBtns.forEach(b => b.classList.remove('active'));
+    document.getElementById('toggle-notes').classList.add('active');
+  });
+}
+
+function setupPlayButtonListener() {
   btnPlay.addEventListener('click', () => {
     if (btnPlay.classList.contains('playing')) {
       stopSong();
-      btnPlay.textContent = 'play';
+      document.getElementById('play-icon').innerHTML = '&#9654;';
       btnPlay.classList.remove('playing');
       return;
     }
 
     const selectedSong = document.getElementById('song-list');
     playSong(selectedSong);
-
-    btnPlay.textContent = 'stop';
+    document.getElementById('play-icon').innerHTML = '&#9646;&#9646;';
     btnPlay.classList.add('playing');
   });
+}
+
+// Init
+async function init() {
+  btnPlay = document.getElementById('play-btn');
+  toggleBtns = document.querySelectorAll('.label-toggle__btn');
+  pianoData = await getPianoDataConfig();
+  songsData = await getSongsData();
+
+  buildPiano();
+  setupToggleListeners();
+  setupPlayButtonListener();
+  populateSongList(songsData);
 }
 
 init();
