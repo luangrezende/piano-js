@@ -263,6 +263,7 @@ body {
   padding: 5px 14px;
   cursor: pointer;
   outline: none;
+  field-sizing: content;
   transition: border-color 0.18s ease, color 0.18s ease;
 }
 

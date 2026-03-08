@@ -1,4 +1,6 @@
 // State
+const DECAY_MULTIPLIER = 1.5;
+const MIN_GAIN = 0.0025;
 let pianoData;
 let audioContext;
 let masterGain;
@@ -25,8 +27,6 @@ async function getAudioContext() {
 }
 
 async function playNote(frequency) {
-  console.log('Playing note with frequency:', frequency);
-
   await getAudioContext();
 
   const harmonics = pianoData?.harmonics;
@@ -40,13 +40,13 @@ async function playNote(frequency) {
     oscillator.frequency.setValueAtTime(frequency * freqMult, currentTime);
 
     gain.gain.setValueAtTime(amplitude, currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.0025, currentTime + decay);
+    gain.gain.exponentialRampToValueAtTime(MIN_GAIN, currentTime + decay);
 
     oscillator.connect(gain);
     gain.connect(masterGain);
 
     oscillator.start(currentTime);
-    oscillator.stop(currentTime + decay);
+    oscillator.stop(currentTime + decay * DECAY_MULTIPLIER);
   });
 }
 
@@ -215,6 +215,9 @@ async function playSong(selectedSong) {
     await shortPause(note.duration, signal);
     keys.forEach(key => key.dispatchEvent(new MouseEvent('mouseup', { bubbles: true })));
   }
+
+  resetPlayButton();
+  toggleSongsList(false);
 }
 
 // UI
@@ -232,6 +235,8 @@ async function populateSongList(songsData) {
 }
 
 function setupToggleListeners() {
+  toggleBtns = document.querySelectorAll('.label-toggle__btn');
+
   document.getElementById('toggle-keys').addEventListener('click', () => {
     document.querySelectorAll('.key-label').forEach(el => el.textContent = el.dataset.keyboard);
     toggleBtns.forEach(b => b.classList.remove('active'));
@@ -246,25 +251,37 @@ function setupToggleListeners() {
 }
 
 function setupPlayButtonListener() {
+  btnPlay = document.getElementById('play-btn');
+
   btnPlay.addEventListener('click', () => {
     if (btnPlay.classList.contains('playing')) {
       stopSong();
-      document.getElementById('play-icon').innerHTML = '&#9654;';
-      btnPlay.classList.remove('playing');
+      resetPlayButton();
+      toggleSongsList(false);
       return;
     }
 
     const selectedSong = document.getElementById('song-list');
     playSong(selectedSong);
+    toggleSongsList(true);
     document.getElementById('play-icon').innerHTML = '&#9646;&#9646;';
     btnPlay.classList.add('playing');
   });
 }
 
+function resetPlayButton() {
+  document.getElementById('play-icon').innerHTML = '&#9654;';
+  btnPlay.classList.remove('playing');
+}
+
+function toggleSongsList(disabled) {
+  const songListElement = document.getElementById('song-list');
+  songListElement.disabled = disabled;
+  toggleBtns.forEach(btn => btn.disabled = disabled);
+}
+
 // Init
 async function init() {
-  btnPlay = document.getElementById('play-btn');
-  toggleBtns = document.querySelectorAll('.label-toggle__btn');
   pianoData = await getPianoDataConfig();
   songsData = await getSongsData();
 

@@ -1,15 +1,15 @@
 {
     "songs": [
         {
-            "title": "Carol Of The Bells",
+            "title": "Carol Of The Bells - Mykola Leontovych",
             "filepath": "/songs/song1.json"
         },
         {
-            "title": "Interstellar",
+            "title": "Interstellar - No Time For Caution",
             "filepath": "/songs/song2.json"
         },
         {
-            "title": "Married Life",
+            "title": "Married Life - Up Soundtrack",
             "filepath": "/songs/song3.json"
         }
     ]
