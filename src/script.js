@@ -180,7 +180,7 @@ function updateScale() {
 }
 
 async function playSong() {
-  const songFile = await fetch('/songs/song1.json');
+  const songFile = await fetch('/songs/song3.json');
   const songData = await songFile.json();
   const songNotes = songData.musicSheet;
 
@@ -208,20 +208,14 @@ async function shortPause(timer) {
 }
 
 // initialize heeeeeeeeeere
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', updateScale);
-} else {
-  window.addEventListener('resize', updateScale);
-}
-
-window.addEventListener('orientationchange', () => {
-  window.addEventListener('resize', updateScale, { once: true });
-});
-
 async function init() {
   pianoData = await getPianoDataConfig();
   updateScale();
   buildPiano();
+
+  window.addEventListener('orientationchange', () => {
+    window.addEventListener('resize', updateScale, { once: true });
+  });
 
   //TODO: just test, remove this block after
   document.getElementById('play-btn').addEventListener('click', () => {
