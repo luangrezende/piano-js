@@ -140,23 +140,23 @@ async function playNote(frequency) {
     return;
   }
 
-  const t = audioContext.currentTime;
+  const currentTime = audioContext.currentTime;
 
   harmonics.forEach(({ mult, amp, decay }) => {
     const osc = audioContext.createOscillator();
     const gain = audioContext.createGain();
 
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(frequency * mult, t);
+    osc.frequency.setValueAtTime(frequency * mult, currentTime);
 
-    gain.gain.setValueAtTime(amp, t);
-    gain.gain.exponentialRampToValueAtTime(0.0001, t + decay);
+    gain.gain.setValueAtTime(amp, currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0055, currentTime + decay);
 
     osc.connect(gain);
     gain.connect(masterGain);
 
-    osc.start(t);
-    osc.stop(t + decay);
+    osc.start(currentTime);
+    osc.stop(currentTime + decay);
   });
 }
 
