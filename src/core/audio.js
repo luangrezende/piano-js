@@ -2,8 +2,7 @@
 
 const DECAY_MULTIPLIER = 1.5;
 const MIN_GAIN = 0.0025;
-const OSCILATOR_TYPE = 'sine';
-const SUSPENDED_STATE = 'suspended';
+const OSCILLATOR_TYPE = 'sine';
 const AUDIO_VOLUME = 0.3;
 
 let audioContext;
@@ -17,7 +16,7 @@ export async function getAudioContext() {
     masterGain.connect(audioContext.destination);
   }
 
-  if (audioContext.state === SUSPENDED_STATE) {
+  if (audioContext.state === 'suspended') {
     await audioContext.resume();
   }
 
@@ -32,7 +31,7 @@ export async function playNote(frequency, harmonics) {
     const oscillator = ctx.createOscillator();
     const gain = ctx.createGain();
 
-    oscillator.type = OSCILATOR_TYPE;
+    oscillator.type = OSCILLATOR_TYPE;
     oscillator.frequency.setValueAtTime(frequency * freqMult, currentTime);
 
     gain.gain.setValueAtTime(amplitude, currentTime);

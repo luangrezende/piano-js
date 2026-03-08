@@ -21,21 +21,21 @@ export async function playSong(filepath, triggerNote, onFinished) {
     if (signal.aborted) break;
 
     if (!note.notes || note.notes.length === 0) {
-      await shortPause(note.duration, signal);
+      await sleep(note.duration, signal);
       continue;
     }
 
     note.notes.forEach((n) => triggerNote(n, 'start'));
-    await shortPause(note.duration, signal);
+    await sleep(note.duration, signal);
     note.notes.forEach((n) => triggerNote(n, 'stop'));
   }
 
   if (!signal.aborted) onFinished?.();
 }
 
-function shortPause(timer, signal) {
+function sleep(ms, signal) {
   return new Promise((resolve) => {
-    const timeout = setTimeout(resolve, timer);
+    const timeout = setTimeout(resolve, ms);
     signal?.addEventListener(
       'abort',
       () => {

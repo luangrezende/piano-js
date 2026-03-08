@@ -5,7 +5,7 @@
 ![Stack](https://img.shields.io/badge/stack-Vanilla%20JS%20%7C%20Web%20Audio%20API-lightgrey)
 ![Deploy](https://img.shields.io/badge/deploy-Railway-blueviolet)
 
-A browser-based virtual piano with audio synthesis, song playback, and swappable skins. No frameworks, no bundler — just ES Modules and the Web Audio API.
+A browser-based virtual piano with audio synthesis, song playback, and swappable skins. No frameworks, no bundler, just ES Modules and the Web Audio API.
 
 ## Overview
 
@@ -18,28 +18,6 @@ piano-js renders a playable piano keyboard in the browser. Notes are synthesized
 - CSS3 (custom properties, animations)
 - [serve](https://github.com/vercel/serve) — static file server
 - Railway — production deployment
-
-## Project Structure
-
-```
-src/
-  main.js             entry point
-  core/
-    api.js            fetchJSON helper
-    audio.js          audio engine — getAudioContext, playNote
-    player.js         song player, instrument-agnostic via triggerNote callback
-  piano/
-    piano.js          builds piano DOM, exports triggerNote
-  ui/
-    controls.js       all UI event wiring
-  index.html
-  style.css
-config/
-  pianoData.json      key layout, harmonics, branding
-  songsData.json      song manifest
-songs/
-  piano/              song files as JSON note sequences
-```
 
 ## Getting Started
 
@@ -60,3 +38,42 @@ npm start
 ```
 
 Uses `${PORT:-3000}` — compatible with Railway and any platform that injects `$PORT` at runtime.
+
+## Adding Songs
+
+Songs are plain JSON files. Each entry in `musicSheet` defines which notes play simultaneously and for how long.
+
+**1. Create the file** at `songs/piano/my-song.json`:
+
+```json
+{
+  "title": "My Song - Artist Name",
+  "musicSheet": [
+    { "notes": ["E4"], "duration": 300 },
+    { "notes": ["D4"], "duration": 300 },
+    { "notes": ["C4", "E4"], "duration": 600 },
+    { "notes": null, "duration": 200 }
+  ]
+}
+```
+
+- `notes` — array of note names (e.g. `"C4"`, `"F#3"`), or `null` for a rest
+- `duration` — how long the step lasts in milliseconds
+- `comment` fields are ignored by the player and can be used as section markers
+
+**2. Register it** in `config/songsData.json`:
+
+```json
+{
+  "songs": {
+    "piano": [
+      {
+        "title": "My Song - Artist Name",
+        "filepath": "/songs/piano/my-song.json"
+      }
+    ]
+  }
+}
+```
+
+The song will appear in the selector automatically — no code changes required.

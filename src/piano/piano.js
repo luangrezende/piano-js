@@ -2,7 +2,7 @@
 
 import { playNote } from '../core/audio.js';
 
-const BLACK_W = 34;
+const BLACK_KEY_WIDTH = 34;
 
 function createKeyLabel(key, element) {
   const label = document.createElement('span');
@@ -59,7 +59,7 @@ function createBlackKey(key, keys, pianoElement, harmonics) {
   const nextWhite = keys
     .slice(keys.indexOf(key) + 1)
     .find((k) => k.type === 'white');
-  element.style.left = nextWhite.el.offsetLeft - BLACK_W / 2 + 'px';
+  element.style.left = nextWhite.el.offsetLeft - BLACK_KEY_WIDTH / 2 + 'px';
 
   pianoElement.appendChild(setupKeyEventListeners(element, key, harmonics));
 }

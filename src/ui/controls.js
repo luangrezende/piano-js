@@ -2,20 +2,20 @@
 
 import { playSong, stopSong } from '../core/player.js';
 
-let btnPlay;
-let toggleBtns;
+let playButton;
+let labelToggleBtns;
 let currentTriggerNote = null;
 
 function populateSongList(songs) {
-  const songListElement = document.getElementById('song-list');
-  if (!songListElement) return;
+  const songList = document.getElementById('song-list');
+  if (!songList) return;
 
-  songListElement.innerHTML = '';
+  songList.innerHTML = '';
   songs.forEach((song) => {
-    const listItem = document.createElement('option');
-    listItem.textContent = song.title;
-    listItem.value = song.filepath;
-    songListElement.appendChild(listItem);
+    const option = document.createElement('option');
+    option.textContent = song.title;
+    option.value = song.filepath;
+    songList.appendChild(option);
   });
 }
 
@@ -41,13 +41,13 @@ export function setupLayoutSelector() {
 }
 
 export function setupToggleListeners() {
-  toggleBtns = document.querySelectorAll('.label-toggle__btn');
+  labelToggleBtns = document.querySelectorAll('.label-toggle__btn');
 
   document.getElementById('toggle-keys').addEventListener('click', () => {
     document
       .querySelectorAll('.key-label')
       .forEach((el) => (el.textContent = el.dataset.keyboard));
-    toggleBtns.forEach((b) => b.classList.remove('active'));
+    labelToggleBtns.forEach((b) => b.classList.remove('active'));
     document.getElementById('toggle-keys').classList.add('active');
   });
 
@@ -55,15 +55,15 @@ export function setupToggleListeners() {
     document
       .querySelectorAll('.key-label')
       .forEach((el) => (el.textContent = el.dataset.note));
-    toggleBtns.forEach((b) => b.classList.remove('active'));
+    labelToggleBtns.forEach((b) => b.classList.remove('active'));
     document.getElementById('toggle-notes').classList.add('active');
   });
 }
 
 function resetPlayButton() {
-  if (!btnPlay) return;
+  if (!playButton) return;
   document.getElementById('play-icon').innerHTML = '&#9654;';
-  btnPlay.classList.remove('playing');
+  playButton.classList.remove('playing');
 }
 
 function toggleSongsList(disabled) {
@@ -71,10 +71,10 @@ function toggleSongsList(disabled) {
 }
 
 export function setupPlayButtonListener() {
-  btnPlay = document.getElementById('play-btn');
+  playButton = document.getElementById('play-btn');
 
-  btnPlay.addEventListener('click', () => {
-    if (btnPlay.classList.contains('playing')) {
+  playButton.addEventListener('click', () => {
+    if (playButton.classList.contains('playing')) {
       stopSong();
       resetPlayButton();
       toggleSongsList(false);
@@ -89,6 +89,6 @@ export function setupPlayButtonListener() {
 
     toggleSongsList(true);
     document.getElementById('play-icon').innerHTML = '&#9646;&#9646;';
-    btnPlay.classList.add('playing');
+    playButton.classList.add('playing');
   });
 }

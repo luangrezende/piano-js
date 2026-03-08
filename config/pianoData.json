@@ -28,11 +28,13 @@
     { "note": "B5", "type": "white", "freq": 987.77, "keyboardKey": "v" }
   ],
   "harmonics": [
-    { "freqMult": 1, "amplitude": 0.65, "decay": 2.8 },
-    { "freqMult": 2, "amplitude": 0.28, "decay": 1.8 },
-    { "freqMult": 3, "amplitude": 0.14, "decay": 1.2 },
-    { "freqMult": 4, "amplitude": 0.07, "decay": 0.8 },
-    { "freqMult": 5, "amplitude": 0.03, "decay": 0.5 },
-    { "freqMult": 6, "amplitude": 0.015, "decay": 0.35 }
+    { "freqMult": 1, "amplitude": 0.62, "decay": 3.1 },
+    { "freqMult": 2, "amplitude": 0.27, "decay": 2.0 },
+    { "freqMult": 3, "amplitude": 0.145, "decay": 1.35 },
+    { "freqMult": 4, "amplitude": 0.075, "decay": 0.95 },
+    { "freqMult": 5, "amplitude": 0.035, "decay": 0.62 },
+    { "freqMult": 6, "amplitude": 0.018, "decay": 0.42 },
+    { "freqMult": 7, "amplitude": 0.008, "decay": 0.24 },
+    { "freqMult": 8, "amplitude": 0.004, "decay": 0.16 }
   ]
 }
