@@ -1,16 +1,18 @@
 {
-    "songs": [
-        {
-            "title": "Carol Of The Bells - Mykola Leontovych",
-            "filepath": "/songs/song1.json"
-        },
-        {
-            "title": "Interstellar - No Time For Caution",
-            "filepath": "/songs/song2.json"
-        },
-        {
-            "title": "Married Life - Up Soundtrack",
-            "filepath": "/songs/song3.json"
-        }
+  "songs": {
+    "piano": [
+      {
+        "title": "Carol Of The Bells - Mykola Leontovych",
+        "filepath": "/songs/piano/song1.json"
+      },
+      {
+        "title": "Interstellar - No Time For Caution",
+        "filepath": "/songs/piano/song2.json"
+      },
+      {
+        "title": "Married Life - Up Soundtrack",
+        "filepath": "/songs/piano/song3.json"
+      }
     ]
+  }
 }

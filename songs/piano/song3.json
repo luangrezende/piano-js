@@ -26,20 +26,17 @@
     { "notes": ["B4"], "duration": 250 },
     { "notes": ["F4"], "duration": 250 },
     { "notes": ["E4"], "duration": 250 },
-
     { "notes": null, "duration": 100 },
 
     { "notes": ["E4"], "duration": 250 },
     { "notes": ["G4"], "duration": 250 },
     { "notes": ["E4"], "duration": 250 },
     { "notes": ["D4"], "duration": 250 },
-
     { "notes": null, "duration": 100 },
 
     { "notes": ["E4"], "duration": 250 },
     { "notes": ["B4"], "duration": 250 },
     { "notes": ["A4"], "duration": 250 },
-
     { "notes": null, "duration": 100 },
 
     { "notes": ["E4"], "duration": 250 },
@@ -47,7 +44,6 @@
     { "notes": ["A4"], "duration": 250 },
     { "notes": ["G4"], "duration": 250 },
     { "notes": ["E4"], "duration": 250 },
-
     { "notes": null, "duration": 100 },
 
     { "notes": ["C5"], "duration": 250 },

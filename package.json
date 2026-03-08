@@ -1,8 +1,11 @@
 {
   "name": "piano-js",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "scripts": {
     "start": "npx --yes serve -l ${PORT:-3000} .",
     "dev": "npx --yes serve -l 3000 ."
+  },
+  "devDependencies": {
+    "eslint": "^10.0.3"
   }
 }

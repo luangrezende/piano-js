@@ -1,4 +1,5 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 body {
   background: #0d0d0d;
@@ -206,10 +207,7 @@ body {
     inset 0 3px 6px rgba(255, 255, 255, 0.06);
 }
 
-.label-toggle {
-  position: fixed;
-  top: 16px;
-  right: 16px;
+.pill-selector {
   display: flex;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.09);
@@ -219,7 +217,7 @@ body {
   z-index: 100;
 }
 
-.label-toggle__btn {
+.pill-selector__btn {
   padding: 5px 13px;
   border: none;
   border-radius: 16px;
@@ -232,18 +230,30 @@ body {
   transition: background 0.18s ease, color 0.18s ease;
 }
 
-.label-toggle__btn:hover {
+.pill-selector__btn:hover {
   color: rgba(255, 255, 255, 0.55);
 }
 
-.label-toggle__btn.active {
+.pill-selector__btn.active {
   background: rgba(255, 255, 255, 0.11);
   color: rgba(255, 255, 255, 0.78);
 }
 
-.song-selector {
+.layout-selector {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+}
+
+.label-toggle {
   position: fixed;
   top: 56px;
+  right: 16px;
+}
+
+.song-selector {
+  position: fixed;
+  top: 16px;
   right: 16px;
   display: flex;
   align-items: center;
@@ -311,4 +321,38 @@ body {
   font-size: 0.65rem;
   letter-spacing: 0.18em;
   font-family: 'Courier New', monospace;
+}
+
+/* ── Skin: clean ───────────────────────────────────────────────────────── */
+
+.layout--clean .piano-case {
+  background: linear-gradient(160deg, #e8e0d4 0%, #ddd5c8 55%, #e4dcd0 100%);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.18),
+    0 0 0 1px #c8beb4,
+    inset 0 2px 5px rgba(255, 255, 255, 0.7),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.06);
+}
+
+.layout--clean .piano-case::before {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.45) 0%, transparent 30%);
+}
+
+.layout--clean .brand {
+  color: #9a8878;
+  text-shadow:
+    0 -1px 1px rgba(255, 255, 255, 0.6),
+    0  1px 0   rgba(0, 0, 0, 0.06);
+}
+
+.layout--clean .signature {
+  color: #a8968a;
+}
+
+.layout--clean .piano-keys {
+  background: #b8aea4;
+}
+
+.layout--clean .hint {
+  color: #b0a89e;
 }

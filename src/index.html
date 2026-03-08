@@ -10,9 +10,14 @@
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <div class="label-toggle">
-      <button class="label-toggle__btn active" id="toggle-keys">keys</button>
-      <button class="label-toggle__btn" id="toggle-notes">notes</button>
+    <div class="layout-selector pill-selector">
+      <button class="pill-selector__btn layout-selector__btn active" data-layout="classic">classic</button>
+      <button class="pill-selector__btn layout-selector__btn" data-layout="clean">clean</button>
+    </div>
+
+    <div class="label-toggle pill-selector">
+      <button class="pill-selector__btn label-toggle__btn active" id="toggle-keys">keys</button>
+      <button class="pill-selector__btn label-toggle__btn" id="toggle-notes">notes</button>
     </div>
 
     <div class="song-selector">
@@ -22,7 +27,7 @@
       </button>
     </div>
 
-    <div class="content-wrapper">
+    <div id="piano-wrapper" class="content-wrapper">
       <div class="piano-case">
         <div class="brand" id="piano-brand"></div>
         <div class="piano-keys" id="piano"></div>
@@ -32,7 +37,7 @@
         Clique ou use o teclado.
       </div>
     </div>
-    
-    <script src="/src/script.js"></script>
+
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

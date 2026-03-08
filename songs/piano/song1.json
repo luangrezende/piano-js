@@ -6,28 +6,24 @@
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["G5"], "duration": 350 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["G5"], "duration": 350 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["G5"], "duration": 350 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "comment": "second part" },
@@ -35,113 +31,96 @@
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
-    
     { "notes": ["D5", "G5"], "duration": 320 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["C5", "G5"], "duration": 320 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["B4", "G5"], "duration": 320 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["C5", "G5"], "duration": 320 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["B4", "G5"], "duration": 320 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["A4", "G5"], "duration": 320 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["E4", "G5"], "duration": 320 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["A4", "G5"], "duration": 320 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["B4", "G5"], "duration": 320 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["C5", "G5"], "duration": 320 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["B4", "G5"], "duration": 320 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["B4", "B5"], "duration": 320 },
     { "notes": ["A5"], "duration": 180 },
     { "notes": ["B5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["C#5", "B5"], "duration": 320 },
     { "notes": ["A5"], "duration": 180 },
     { "notes": ["B5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["D#5", "B5"], "duration": 320 },
     { "notes": ["A5"], "duration": 180 },
     { "notes": ["B5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["D#5", "B5"], "duration": 320 },
     { "notes": ["A5"], "duration": 180 },
     { "notes": ["B5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "comment": "final" },
@@ -160,21 +139,18 @@
     { "notes": ["A5"], "duration": 160 },
     { "notes": ["B5"], "duration": 160 },
     { "notes": ["A5"], "duration": 160 },
-
     { "notes": null, "duration": 50 },
 
     { "notes": ["E4", "G5"], "duration": 320 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["E4", "G5"], "duration": 320 },
     { "notes": ["F5"], "duration": 180 },
     { "notes": ["G5"], "duration": 180 },
     { "notes": ["E5"], "duration": 180 },
-
     { "notes": null, "duration": 180 },
 
     { "notes": ["E4", "G5"], "duration": 480 },

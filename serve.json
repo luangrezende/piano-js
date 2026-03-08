@@ -1,6 +1,4 @@
 {
-  "rewrites": [
-    { "source": "/", "destination": "/src/index.html" }
-  ],
+  "rewrites": [{ "source": "/", "destination": "/src/index.html" }],
   "directoryListing": true
 }
